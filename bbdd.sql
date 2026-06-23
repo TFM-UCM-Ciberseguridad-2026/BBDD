@@ -9,8 +9,8 @@ DROP TABLE IF EXISTS Finding;
 DROP TABLE IF EXISTS Software_Vulnerability;
 DROP TABLE IF EXISTS Installation;
 DROP TABLE IF EXISTS Connection;
-DROP TABLE IF EXISTS Hardware;
 DROP TABLE IF EXISTS Endpoint;
+DROP TABLE IF EXISTS Hardware;
 DROP TABLE IF EXISTS Parche;
 DROP TABLE IF EXISTS Vulnerabilidad;
 DROP TABLE IF EXISTS Software;
@@ -67,6 +67,14 @@ CREATE TABLE Parche (
     url TEXT
 );
 
+CREATE TABLE Hardware (
+    hardware_id INT AUTO_INCREMENT PRIMARY KEY,
+    fabricante VARCHAR(255),
+    modelo VARCHAR(255),
+    cpu VARCHAR(150),
+    ram_gb INT,
+    almacenamiento_gb INT
+);
 
 CREATE TABLE Endpoint (
     endpoint_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -74,25 +82,13 @@ CREATE TABLE Endpoint (
     tipo VARCHAR(100),
     estado VARCHAR(50),
     project_id INT,
+    hardware_id INT,
     asset_criticality INT,
     environment VARCHAR(100),
     internet_exposed BOOLEAN,
-    CONSTRAINT fk_endpoint_project FOREIGN KEY (project_id) REFERENCES Proyecto(project_id) ON DELETE SET NULL
+    CONSTRAINT fk_endpoint_project FOREIGN KEY (project_id) REFERENCES Proyecto(project_id) ON DELETE SET NULL,
+    CONSTRAINT fk_endpoint_hardware FOREIGN KEY (hardware_id) REFERENCES Hardware(hardware_id) ON DELETE SET NULL
 );
-
-
-CREATE TABLE Hardware (
-    hardware_id INT AUTO_INCREMENT PRIMARY KEY,
-    endpoint_id INT,
-    fabricante VARCHAR(255),
-    modelo VARCHAR(255),
-    serial_number VARCHAR(255),
-    cpu VARCHAR(150),
-    ram_gb INT,
-    almacenamiento_gb INT,
-    CONSTRAINT fk_hardware_endpoint FOREIGN KEY (endpoint_id) REFERENCES Endpoint(endpoint_id) ON DELETE CASCADE
-);
-
 
 CREATE TABLE Connection (
     endpoint_id INT,
@@ -114,7 +110,7 @@ CREATE TABLE Installation (
     status VARCHAR(50),
     PRIMARY KEY (endpoint_id, software_id),
     CONSTRAINT fk_installation_endpoint FOREIGN KEY (endpoint_id) REFERENCES Endpoint(endpoint_id) ON DELETE CASCADE,
-    CONSTRAINT fk_installation_software FOREIGN KEY (software_id) REFERENCES Software(software_id) ON DELETE CASCADE
+    CONSTRAINT fk_installation_software KEY (software_id) REFERENCES Software(software_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Software_Vulnerability (
@@ -130,7 +126,6 @@ CREATE TABLE Software_Vulnerability (
     CONSTRAINT fk_sv_software FOREIGN KEY (software_id) REFERENCES Software(software_id) ON DELETE CASCADE,
     CONSTRAINT fk_sv_cve FOREIGN KEY (cve_id) REFERENCES Vulnerabilidad(cve_id) ON DELETE CASCADE
 );
-
 
 CREATE TABLE Finding (
     finding_id INT AUTO_INCREMENT PRIMARY KEY,
