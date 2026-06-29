@@ -91,3 +91,9 @@ CREATE (p:Patch {patch_id: 1, name: "Struts 2.5.10.1 Update"})-[:REMEDIATES]->(v
 Si vuelves a ejecutar la consulta para ver hasta dónde llega el ataque, **no te devolverá ningún resultado**. ¡Has mitigado todo el grafo de ataque y la red vuelve a estar completamente segura!
 
 > **Nota Visual**: Si en el grafo ves círculos verdes con números (1, 2, 3), haz clic en la píldora `Software` de la barra lateral izquierda y, en el menú que se despliega debajo, selecciona `nombre` en la sección de Caption. Esto mostrará el nombre real del software (Apache, Polkit, etc.).
+
+## Cómo vaciar la bbdd
+**Ejecutar el siguiente comando**
+```cypher
+MATCH (n) DETACH DELETE n
+```
